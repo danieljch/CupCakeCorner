@@ -9,25 +9,21 @@ import SwiftUI
 
 struct ContentView: View {
     var body: some View {
-        Text("Hello, world!")
-            .padding()
+        AsyncImage(url: URL(string: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/15/Bolivia_admin_2019.svg/300px-Bolivia_admin_2019.svg.png")) { phase in
+            if let image = phase.image {
+                image
+                    .resizable()
+                    .scaledToFit()
+            } else if phase.error != nil {
+                Text("There was an error loading the image.")
+            } else {
+                ProgressView()
+            }
+        }
+        .frame(width: 200, height: 200)
     }
 }
-enum CodingKeys: CodingKey {
-    case name
-}
-class User: ObservableObject, Codable {
-    @Published var name = "Paul Hudson"
-    required init(from decoder: Decoder) throws {
-        let container = try decoder.container(keyedBy: CodingKeys.self)
-        name = try container.decode(String.self, forKey: .name)
-    }
-    
-    func encode(to encoder: Encoder) throws {
-        var container = encoder.container(keyedBy: CodingKeys.self)
-        try container.encode(name, forKey: .name)
-    }
-}
+
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
